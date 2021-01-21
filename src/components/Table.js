@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 const Table = ({rows, columns, format}) => {
   const [currentPage, setCurrentPage] = useState(0)
-  const [routesPerPage, setRoutesPerPage] = useState(25)
+  const [perPage, setPerPage] = useState(25)
 
   const keyGenerator = () => {
     return Math.ceil(Math.random() * 100000000);
@@ -16,9 +16,25 @@ const Table = ({rows, columns, format}) => {
     return formattedRoute;
   }
 
+  const nextPage = () => {
+    setCurrentPage(currentPage + 1);
+  }
+
+  const previousPage = () => {
+    setCurrentPage(currentPage - 1);
+  }
+
+  const setRouteRange = () => {
+    let start = currentPage * perPage;
+    let end = (currentPage + 1) * perPage;
+    return [start, end]
+  }
+
+  const routeRange = setRouteRange()
+
   return (
     <div>
-      <table>
+      <table className="routes-table">
         <thead>
           <tr>
           {columns.map(column => {
@@ -27,7 +43,7 @@ const Table = ({rows, columns, format}) => {
           </tr>
         </thead>
         <tbody>
-          {rows.slice(currentPage, routesPerPage).map(route => {
+          {rows.slice(routeRange[0], routeRange[1]).map(route => {
             return (
               <tr key={keyGenerator()}>
                 {generateRoute(route)}
@@ -36,7 +52,24 @@ const Table = ({rows, columns, format}) => {
           })}
         </tbody>
       </table>
-      <p>{`Showing ${currentPage + 1}-${(currentPage + 1) * routesPerPage} of ${rows.length} routes.`}</p>
+      
+      <div>
+      <p>{`Showing ${routeRange[0] + 1}-${routeRange[1]} of ${rows.length} routes.`}</p>
+        <p>
+          <button 
+            onClick={previousPage} 
+            disabled={routeRange[0] <= 0}
+          >
+            Previous Page
+          </button>
+          <button 
+            onClick={nextPage}
+            disabled={routeRange[1] >= rows.length}
+          >
+            Next Page
+          </button>
+        </p>
+      </div>
     </div>
   )
 }
