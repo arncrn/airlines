@@ -1,43 +1,47 @@
 import React from 'react';
 import './App.css';
-import flightData from './data'
+import flightData, {getAirlineById, getAirportByCode} from './data';
+import Table from './components/Table';
 
-const keyGenerator = () => {
-  return Math.ceil(Math.random() * 100000000);
+
+
+const App = () => {
+  
+
+  const formatValue = (property, value) => {
+    switch(property) {
+      case 'airline': return getAirlineById(value).name;
+      case 'src': return getAirportByCode(value).name;
+      case 'dest': return getAirportByCode(value).name;
+      default: return '';
+    }
+  }
+
+  const columns = [
+    {name: 'Airline', property: 'airline'},
+    {name: 'Source Airport', property: 'src'},
+    {name: 'Destination Airport', property: 'dest'}
+  ];
+
+  return (
+    <div className="app">
+    <header className="header">
+      <h1 className="title">Airline Routes</h1>
+    </header>
+    <section>
+      <p>
+        Welcome to the app!
+      </p>
+      <Table 
+        className="routes-table" 
+        columns={columns}
+        rows={flightData.routes}
+        format={formatValue}
+      />
+    </section>
+  </div>
+  )
 }
-
-const App = () => (
-  <div className="app">
-  <header className="header">
-    <h1 className="title">Airline Routes</h1>
-  </header>
-  <section>
-    <p>
-      Welcome to the app!
-    </p>
-    <table>
-      <thead>
-        <tr>
-        <th>Airline</th>
-        <th>Source</th>
-        <th>Desinitation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {flightData.routes.map((route, idx) => {
-          return (
-            <tr key={keyGenerator()}>
-              <td>{route.airline}</td>
-              <td>{route.src}</td>
-              <td>{route.dest}</td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  </section>
-</div>
-)
 
 export default App;
 
