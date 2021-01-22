@@ -5,7 +5,7 @@ const Table = ({rows, columns, format}) => {
   const [perPage, setPerPage] = useState(25)
 
   const keyGenerator = () => {
-    return Math.ceil(Math.random() * 100000000);
+    return Math.ceil(Math.random() * 100000000) + new Date().getTime();;
   }
 
   const generateRoute = (route) => {

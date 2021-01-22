@@ -4,8 +4,6 @@ import flightData, {getAirlineById, getAirportByCode} from './data';
 import Table from './components/Table';
 import Select from './components/Select';
 
-
-
 const App = () => {
   const [filterForAirlines, setFilterForAirlines] = useState('');
   const [filterForAirports, setFilterForAirports] = useState('');
@@ -57,19 +55,18 @@ const App = () => {
   }
 
   const getAvailableAirlineIds = () => {
-    let airlineIds = [];
+    let airlineIds = {};
     rows.forEach(row => {
-      if (!airlineIds[row.airline]) airlineIds.push(row.airline)
+      if (!airlineIds[row.airline]) airlineIds[row.airline] = true;
     })
-
-    return airlineIds;
+    return Object.keys(airlineIds);
   }
 
   let availableAirportCodes = getAvailableAirportCodes();
   let availableAirlineIds = getAvailableAirlineIds();
 
   const filteredAirlines = flightData.airlines.filter(airline => {
-    return availableAirlineIds.includes(airline.id)
+    return availableAirlineIds.includes(airline.id.toString())
   })
 
   const filteredAirports = flightData.airports.filter(airport => {
@@ -78,44 +75,44 @@ const App = () => {
 
   return (
     <div className="app">
-    <header className="header">
-      <h1 className="title">Airline Routes</h1>
-    </header>
-    <section>
-      Show routes on 
-      <Select 
-        options={filteredAirlines}
-        rawOptions={flightData.airlines}
-        valueKey="id"
-        titleKey="name"
-        allTitle="All Airlines"
-        value={filterForAirlines}
-        onSelect={filterAirlineOptions}
-      />
-      Flying in or out of
-      <Select 
-        options={filteredAirports}
-        rawOptions={flightData.airports}
-        valueKey="id"
-        titleKey="name"
-        allTitle="All Airports"
-        value={filterForAirports}
-        onSelect={filterAirportOptions}
-      />
-      <button 
-        disabled={!filterForAirlines && !filterForAirports}
-        onClick={clearFilters}
-      >
-        Show All Routes
-      </button>
-      <Table 
-        className="routes-table" 
-        columns={columns}
-        rows={rows}
-        format={formatValue}
-      />
-    </section>
-  </div>
+      <header className="header">
+        <h1 className="title">Airline Routes</h1>
+      </header>
+      <section>
+        Show routes on 
+        <Select 
+          options={filteredAirlines}
+          rawOptions={flightData.airlines}
+          valueKey="id"
+          titleKey="name"
+          allTitle="All Airlines"
+          value={filterForAirlines}
+          onSelect={filterAirlineOptions}
+        />
+        Flying in or out of
+        <Select 
+          options={filteredAirports}
+          rawOptions={flightData.airports}
+          valueKey="id"
+          titleKey="name"
+          allTitle="All Airports"
+          value={filterForAirports}
+          onSelect={filterAirportOptions}
+        />
+        <button 
+          disabled={!filterForAirlines && !filterForAirports}
+          onClick={clearFilters}
+        >
+          Show All Routes
+        </button>
+        <Table 
+          className="routes-table" 
+          columns={columns}
+          rows={rows}
+          format={formatValue}
+        />
+      </section>
+    </div>
   )
 }
 

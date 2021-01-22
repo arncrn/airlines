@@ -2,7 +2,7 @@ import React from 'react';
 
 const Select = ({options = [], valueKey, titleKey, allTitle, value, onSelect, rawOptions}) => {
   const keyGenerator = () => {
-    return Math.ceil(Math.random() * 100000000);
+    return Math.ceil(Math.random() * 100000000) + new Date().getTime();;
   }
 
   const disableOption = (option) => {
