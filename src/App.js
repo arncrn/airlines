@@ -56,15 +56,24 @@ const App = () => {
     return Object.keys(airportCodes);
   }
 
-  const filteredAirlines = flightData.airlines.filter(airline => airline.name.includes(filterForAirlines))
+  const getAvailableAirlineIds = () => {
+    let airlineIds = [];
+    rows.forEach(row => {
+      if (!airlineIds[row.airline]) airlineIds.push(row.airline)
+    })
 
-  let availableAirportCodes = getAvailableAirportCodes()
+    return airlineIds;
+  }
+
+  let availableAirportCodes = getAvailableAirportCodes();
+  let availableAirlineIds = getAvailableAirlineIds();
+
+  const filteredAirlines = flightData.airlines.filter(airline => {
+    return availableAirlineIds.includes(airline.id)
+  })
 
   const filteredAirports = flightData.airports.filter(airport => {
-    if (filteredAirlines.length === 1) {
-      return availableAirportCodes.includes(airport.code)
-    }
-    return true
+    return availableAirportCodes.includes(airport.code)
   })
 
   return (
@@ -76,6 +85,7 @@ const App = () => {
       Show routes on 
       <Select 
         options={filteredAirlines}
+        rawOptions={flightData.airlines}
         valueKey="id"
         titleKey="name"
         allTitle="All Airlines"
@@ -85,6 +95,7 @@ const App = () => {
       Flying in or out of
       <Select 
         options={filteredAirports}
+        rawOptions={flightData.airports}
         valueKey="id"
         titleKey="name"
         allTitle="All Airports"
@@ -109,8 +120,3 @@ const App = () => {
 }
 
 export default App;
-
-
-// flightData.routes
-// flightData.airlines
-// flightData.airports
